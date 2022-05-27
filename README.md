@@ -24,4 +24,4 @@ Simple timesheet backend using Express(typescript) liberally
 
 #### UI design
 
-![Uploading Screen Shot 2565-05-27 at 14.30.44.png…]()
+![Screen Shot 2565-05-27 at 14 30 44](https://user-images.githubusercontent.com/82103342/170663279-a121591f-a671-490b-95d9-085ebd944de3.png)
