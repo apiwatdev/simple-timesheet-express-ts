@@ -1,0 +1,19 @@
+
+body {
+    margin: 1rem 0;
+}
+
+section { 
+    margin-bottom: 0.5rem;
+}
+
+.select-month {
+    margin-bottom: 0.5rem;
+}
+
+
+@media screen  and (max-width: 768px){
+    .w-md-100 {
+        width:  100%!important
+    } 
+}
