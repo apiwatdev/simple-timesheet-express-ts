@@ -20,5 +20,6 @@ Simple timesheet backend using Express(typescript) liberally
 *frontend* : simple HTML
 
 #### Database diagram
+![Screen Shot 2565-05-27 at 13 53 06](https://user-images.githubusercontent.com/82103342/170647118-d02e60f2-b160-435e-833b-7785c3348208.png)
 
 #### UI design
