@@ -4,6 +4,9 @@
   "description": "Simple timesheet backend using Express(typescript) liberally",
   "main": "index.js",
   "scripts": {
+    "db:dev:rm": "docker compose rm dev-db -s -f -v",
+    "db:dev:up": "docker compose up -d",
+    "db:dev:restart": "npm run db:dev:rm && npm run db:dev:up",
     "start:dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -22,5 +25,9 @@
     "express": "^4.18.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^4.7.2"
+  },
+  "dependencies": {
+    "mysql2": "^2.3.3",
+    "typeorm": "^0.3.6"
   }
 }
