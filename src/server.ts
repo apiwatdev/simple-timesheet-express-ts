@@ -1,19 +1,10 @@
-import express, { Request, Response } from "express";
-import { AppDataSource } from "./db";
+import * as db from "./db";
+import { createApp } from "./app";
 
-const app = express();
+db.initialize();
+
 const port = 3000;
 
-AppDataSource.initialize()
-  .then(async () => {
-    console.log("database connecting...");
-  })
-  .catch((error) => console.log(error));
-
-app.get("", (req: Request, res: Response) => {
-  res.send("Simple timesheet api");
-});
-
-app.listen(port, () => {
+createApp().listen(port, () => {
   console.log(`Application listening at http://localhost:${port}`);
 });

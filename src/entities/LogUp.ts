@@ -4,36 +4,37 @@ import {
   Entity,
   ManyToOne,
   OneToOne,
+  PrimaryColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Timesheet } from "./Timesheet";
+import { Employee } from "./Employee";
 
 @Entity()
 export class LogUp {
-  @PrimaryGeneratedColumn()
-  logUpId: number;
+  @PrimaryColumn("int")
+  day: number;
 
-  @Column("datetime")
-  logUpDate: Date;
+  @PrimaryColumn("int")
+  month: number;
 
-  @Column("datetime")
+  @PrimaryColumn("int")
+  year: number;
+
+  @Column({ type: "datetime", nullable: true })
   checkIn: Date;
-  @Column("datetime")
+  @Column({ type: "datetime", nullable: true })
   checkOut: Date;
-
-  @Column("tinyint")
+  @Column({ type: "tinyint", nullable: true })
   hours: number;
-
-  @Column("tinyint")
+  @Column({ type: "tinyint", nullable: true })
   OTHours: number;
 
   @CreateDateColumn()
   created_at: Date;
-
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToOne(() => Timesheet, (timesheet) => timesheet.logups)
-  timesheet: Timesheet;
+  @ManyToOne(() => Employee, (employee) => employee.logups)
+  employee: Employee;
 }

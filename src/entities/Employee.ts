@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { LogUp } from "./LogUp";
 import { RequestLeave } from "./RequestLeave";
-import { Timesheet } from "./Timesheet";
 
 @Entity()
 export class Employee {
@@ -42,9 +42,13 @@ export class Employee {
   })
   birthDate: Date;
 
-  @OneToMany(() => Timesheet, (timesheet) => timesheet.employee)
-  timesheets: Timesheet[];
+  @OneToMany(() => LogUp, (logup) => logup.employee, {
+    cascade: true,
+  })
+  logups: LogUp[];
 
-  @OneToMany(() => RequestLeave, (requestLeave) => requestLeave.employee)
+  @OneToMany(() => RequestLeave, (requestLeave) => requestLeave.employee, {
+    cascade: true,
+  })
   requestLeaves: RequestLeave[];
 }
