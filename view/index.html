@@ -10,6 +10,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
+
+
 </head>
 
 <body>
@@ -18,33 +20,26 @@
         <section class="select-employee-section mb-3">
             <div class="select_employee row">
                 <div class="col-3">
-                    <select class="form-select" aria-label=" Default select example">
+                    <select id="employee-select" class="form-select" aria-label=" Default select example"
+                        onchange="selectEmployeeChange()">
                         <option selected>Select employee</option>
-                        <option value="1">John Wanumn</option>
-                        <option value="2">Json Winson</option>
-                        <option value="3">Apiwat Dason</option>
+
                     </select>
                 </div>
 
             </div>
         </section>
 
-
-
         <section class="timesheet logup mb-3">
-            <div class="card p-3 w-md-100 w-50">
+            <div class="card p-3 w-md-100 w-75">
                 <div class="check_in-out row ">
-                    <div class="col-6">
-                        <select class="form-select  mb-2" aria-label="Default select example">
-                            <option selected>Select Date</option>
-                            <option value="1">John Wanumn</option>
-                            <option value="2">Json Winson</option>
-                            <option value="3">Apiwat Dason</option>
-                        </select>
+
+                    <div class="col-4">
+                        <input type="datetime-local" step=1 id="select-datetime" name="select-datetime">
                     </div>
                     <div class="col-6">
-                        <button type="button" class="btn btn-success">check in</button>
-                        <button type="button" class="btn btn-danger">Check out</button>
+                        <button type="button" onclick="checkIn()" class="btn btn-success">check in</button>
+                        <button type="button" onclick="checkOut()" class="btn btn-danger">Check out</button>
                     </div>
                 </div>
             </div>
@@ -52,49 +47,163 @@
 
         <section class="timesheet-list">
             <div class="select-month">
-                <select class="form-select" aria-label="Default select example">
-                    <option selected>Select Month</option>
-                    <option value="1">John Wanumn</option>
-                    <option value="2">Json Winson</option>
-                    <option value="3">Apiwat Dason</option>
+                <select onchange="selectMonthYearChange()" id="select-month-year" class="form-select"
+                    aria-label="Default select example">
+                    <option selected>Select Month - Year</option>
+
                 </select>
             </div>
 
             <div class="logup-list">
-                <table class="table">
-                    <thead class="thead-dark">
+                <table class="table" id="timesheet-day-table">
+                    <thead class="thead">
                         <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">First</th>
-                            <th scope="col">Last</th>
-                            <th scope="col">Handle</th>
+
+                            <th scope="col">date</th>
+                            <th scope="col">day</th>
+                            <th scope="col">check-in</th>
+                            <th scope="col">check-out</th>
+                            <th scope="col">hours</th>
+                            <th scope="col">OT</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td>Larry</td>
-                            <td>the Bird</td>
-                            <td>@twitter</td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
         </section>
 
+
+
+
     </div>
+
+    <script>
+        var selectEmployee = document.getElementById("employee-select");
+        var selectMonthYear = document.getElementById("select-month-year")
+        var selectDate = document.getElementById('select-datetime')
+        fetch('http://localhost:3000/employee').then(response => response.json()).then((data) => {
+
+            if (data) {
+                for (const employee of data) {
+                    let option = document.createElement("option");
+                    option.text = employee.firstname + ' ' + employee.lastname;
+                    option.value = employee.employeeId
+                    selectEmployee.add(option);
+                }
+            }
+        })
+
+        function selectEmployeeChange(event) {
+            fetch('http://localhost:3000/api/timesheet/' + selectEmployee.value + '/month-year')
+                .then(response => response.json()).then(data => {
+                    let length = selectMonthYear.options.length;
+
+
+
+                    selectMonthYear.innerHTML = ""
+
+                    let optionSelect = document.createElement("option");
+                    optionSelect.text = 'Select Month - Year';
+
+                    selectMonthYear.add(optionSelect)
+
+
+                    for (const monthYear of data) {
+                        let option = document.createElement("option");
+                        option.text = monthYear;
+                        option.value = monthYear
+                        selectMonthYear.add(option)
+                    }
+                })
+        }
+
+        function selectMonthYearChange() {
+            fetch('http://localhost:3000/api/timesheet/' + selectEmployee.value + '/' + selectMonthYear.value).then(response => response.json()).then(data => {
+
+
+                var table = document.getElementById('timesheet-day-table');
+                var tbody = table.querySelector('tbody') || table;
+                var count = tbody.getElementsByTagName('tr').length;
+
+                while (tbody.hasChildNodes()) {
+                    tbody.removeChild(tbody.firstChild)
+                }
+                for (day of data.details) {
+
+                    const row = document.createElement('tr')
+                    const colDate = document.createElement('td')
+                    colDate.innerText = day.date
+
+                    const colDay = document.createElement('td')
+                    colDay.innerText = day.day
+
+                    const colCheckIn = document.createElement('td')
+                    colCheckIn.innerText = day.timeOfCheckin;
+
+                    const colCheckOut = document.createElement('td')
+                    colCheckOut.innerText = day.timeOfCheckout
+
+                    const colHours = document.createElement('td')
+                    colHours.innerText = day.hour
+
+
+                    const colOT = document.createElement('td')
+                    colOT.innerText = day.OT
+
+                    // numericColumn.innerText = count.toLocaleString() + '.';
+
+                    row.appendChild(colDate)
+                    row.appendChild(colDay)
+                    row.appendChild(colCheckIn)
+                    row.appendChild(colCheckOut)
+                    row.appendChild(colHours)
+                    row.appendChild(colOT)
+
+                    tbody.appendChild(row);
+                }
+            })
+        }
+
+        function checkIn() {
+            const datetime = selectDate.value
+
+            if (datetime) {
+                fetch('http://localhost:3000/logup/' + selectEmployee.value + '/checkin', {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                        // 'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: JSON.stringify({ datetime: datetime })
+                }).then(() => {
+                    selectMonthYearChange()
+                }).catch(error => {
+                    console.log(error)
+                })
+            }
+
+        }
+
+        function checkOut() {
+            const datetime = selectDate.value
+            if (datetime) {
+                fetch('http://localhost:3000/logup/' + selectEmployee.value + '/checkout', {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                        // 'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: JSON.stringify({ datetime: datetime })
+                }).then(() => {
+                    selectMonthYearChange()
+                    selectEmployeeChange()
+                }).catch(error => {
+                    console.log(error)
+                })
+            }
+        }
+    </script>
 </body>
 
 </html>

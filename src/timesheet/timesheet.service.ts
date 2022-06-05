@@ -63,11 +63,22 @@ export class TimeSheetService {
     }
   }
   timeFormatByDate(date: Date) {
-    return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    return date
+      ? `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+      : "";
   }
 
   dateFormatByDate(date: Date) {
-    return `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`;
+    const dateText =
+      `${date.getDate()}`.length < 2
+        ? `0${date.getDate()}`
+        : `${date.getDate()}`;
+
+    const monthText =
+      `${date.getMonth() + 1}`.length < 2
+        ? `0${date.getMonth() + 1}`
+        : `${date.getMonth() + 1}`;
+    return `${dateText}-${monthText}-${date.getFullYear()}`;
   }
   async genTimesheet(employeeId: number, month: number, year: number) {
     const daysInMonth = new Date(year, month, 0).getDate();
@@ -75,8 +86,10 @@ export class TimeSheetService {
     let totalDays = 0;
     let totalHours = 0;
     let totalOT = 0;
+
     for (let day = 1; day <= daysInMonth; day++) {
-      const currentDay = new Date(year, month, day);
+      const currentDay = new Date(year, month - 1, day);
+
       const dayOfWeek = currentDay.getDay();
       const dayText = this.dayOfWeekToText(dayOfWeek);
       const detail = {

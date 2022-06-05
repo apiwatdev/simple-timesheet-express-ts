@@ -66,6 +66,7 @@ export class LogupService {
   async checkIn(employeeId: number, datetime: string): Promise<void> {
     const now = new Date(datetime);
     const employee = await this.employeeService.haveEmployeeById(employeeId);
+
     const foundTodayLogup = await this.foundTodayLogup(employeeId, now);
 
     if (foundTodayLogup) {
@@ -91,6 +92,7 @@ export class LogupService {
   async checkOut(employeeId: number, datetime: string): Promise<void> {
     const now = new Date(datetime);
     const employee = await this.employeeService.haveEmployeeById(employeeId);
+
     const foundTodayLogup = await this.foundTodayLogup(employeeId, now);
 
     if (!foundTodayLogup || foundTodayLogup.checkOut) {
